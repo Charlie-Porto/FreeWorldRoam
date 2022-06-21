@@ -20,7 +20,7 @@ namespace quickdraw {
 
 glm::vec2 ConvertCartesianCoordinatesToSDL(glm::vec2 point) {
   const int sdl_x = point.x + int(global_const::screen_x/2);
-  const int sdl_y = point.y + int(global_const::screen_y/2);
+  const int sdl_y = -point.y + int(global_const::screen_y/2);
   return glm::vec2(sdl_x, sdl_y);
 }
 

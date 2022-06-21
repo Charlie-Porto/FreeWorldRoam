@@ -30,6 +30,7 @@ void moveCameraViewDirectionLateral(EyeCamera& camera, const double& direction) 
   const double xz_circle_radius = cos(camera.y_angle/180.0 * PI) * global_const::view_sphere_radius;
   camera.view_direction.x = sin(camera.xz_angle/180.0 * PI) * xz_circle_radius;
   camera.view_direction.z = cos(camera.xz_angle/180.0 * PI) * xz_circle_radius;
+  updateCameraReverseRotationVersor(camera);
 }
 void moveCameraViewDirectionVertical(EyeCamera& camera, const double& direction) {
   camera.y_angle += global_const::view_movement_angle * direction;
@@ -69,19 +70,19 @@ void updateEyeCameraPosition(EyeCamera& camera, VirtualKeyboard& keyboard) {
   }
   if (joystick_report.W_pressed == true) {
     ezp::print_item("JOYSTICK: W");
-    moveCameraAlongFloor(camera, glm::dvec3(0, 0, 1));
+    moveCameraAlongFloor(camera, glm::dvec3(0, 0, -1));
   }
   if (joystick_report.S_pressed == true) {
     ezp::print_item("JOYSTICK: S");
-    moveCameraAlongFloor(camera, glm::dvec3(0, 0, -1));
+    moveCameraAlongFloor(camera, glm::dvec3(0, 0, 1));
   }
   if (joystick_report.A_pressed == true) {
     ezp::print_item("JOYSTICK: A");
-    moveCameraAlongFloor(camera, glm::dvec3(1, 0, 0));
+    moveCameraAlongFloor(camera, glm::dvec3(-1, 0, 0));
   }
   if (joystick_report.D_pressed == true) {
     ezp::print_item("JOYSTICK: D");
-    moveCameraAlongFloor(camera, glm::dvec3(-1, 0, 0));
+    moveCameraAlongFloor(camera, glm::dvec3(1, 0, 0));
   }
 }
 

@@ -33,18 +33,18 @@ glm::dvec3 convertPixelToPointOnViewSphere(const glm::dvec2& pixel,
 
 
 
-// NOTE FOR THIS FUNCTION: the 
 glm::dvec2 convertPointOnViewSphereToPixel(const glm::dvec3& point,
                                            const glm::dvec3& view_sphere_center) {
   const double granularity = .001;
+  const int search_cycles = 4000;
   auto mpoint = glm::dvec3(point.x, point.y, point.z) - view_sphere_center;
   int i = 0;
-  while (abs(mpoint.y) >= granularity && i <= 3000) {
+  while (abs(mpoint.y) >= granularity && i <= 4000) {
     mpoint = pce::pix_map::calculateVerticalNeighborPixelVec3(mpoint, pce::math::sign(point.y));
     ++i;
   }
   int j = 0;
-  while (abs(mpoint.x) >= granularity && j <= 3000) {
+  while (abs(mpoint.x) >= granularity && j <= 4000) {
     mpoint = pce::pix_map::calculateHorizontalNeighborPixelVec3(mpoint, -pce::math::sign(point.x));
     ++j;
   }

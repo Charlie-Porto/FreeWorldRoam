@@ -28,13 +28,22 @@ public:
     camera_.transformation_vector = {0, 0, 0};
   }
 
+  const glm::dquat ProvideCamVersor() const {
+    return camera_.rotation_versor;
+  }
+  const glm::dvec3 ProvideCamTransformVector() const {
+    return -camera_.position;
+  }
+  const glm::dvec3 ProvideCamPosition() const {
+    return camera_.position;
+  }
+
   void UpdateCameraPositionAndAngle() {
-    ezp::print_item("updating Camera Position and Angle");
     pce::cam_op::updateEyeCameraPosition(camera_, keyboard_); 
-    ezp::print_item("camera position: ");
-    vezp::print_dvec3(camera_.position);
-    ezp::print_item("camera view direction: ");
-    vezp::print_dvec3(camera_.view_direction);
+    // ezp::print_item("camera position: ");
+    // vezp::print_dvec3(camera_.position);
+    // ezp::print_item("camera view direction: ");
+    // vezp::print_dvec3(camera_.view_direction);
     
   }
 

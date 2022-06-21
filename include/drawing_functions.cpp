@@ -7,6 +7,9 @@
 #include <cmath>
 #include <vector>
 
+#include <ezprint.cpp>
+#include <vezprint.cpp>
+
 
 
 
@@ -24,9 +27,19 @@ void drawPixelList (std::vector<std::vector<int>> pixels, std::vector<int> color
 
 void drawPixel (std::vector<int> pixel, int color[4], SDL_Renderer* renderer) 
 {
+    SDL_SetRenderDrawColor(renderer, color[0], color[1], color[2], color[3]);
     SDL_RenderDrawPoint(renderer, pixel[0], pixel[1]);
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 }
 
+void drawPixelVec2 (glm::vec2 pixel, std::vector<int> color, SDL_Renderer* renderer) 
+{
+ // ezp::print_item("drawing pixel:");
+ // vezp::print_dvec2(pixel);
+    SDL_SetRenderDrawColor(renderer, color[0], color[1], color[2], color[3]);
+    SDL_RenderDrawPoint(renderer, pixel.x, pixel.y);
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+}
 
 /* SQUARE DRAWING FUNCTION */
 void drawSquare (int x_corner, int y_corner, int width, std::vector<int> color, SDL_Renderer* renderer) {
@@ -105,7 +118,7 @@ std::vector<std::vector<int>> getCircleRasterizationPoints(int xc, int yc, int r
         }
         
         std::vector<std::vector<int>> new_points = getCircleOctet(xc, yc, x, y);
-        points_list = append_vect(points_list, new_points);
+        points_list.insert(points_list.end(), new_points.begin(), new_points.end());
     }
 
     return points_list;
@@ -116,6 +129,12 @@ void drawCircle(int xc, int yc, int r, std::vector<int> color, SDL_Renderer* ren
   drawPixelList(points, color, renderer);
 }
 
+
+void calculateAndDrawCirclePoints(const int& xc, const int& yc, const int& r, 
+                                  const std::vector<int>& color, SDL_Renderer* renderer) {
+  
+
+}
 
 
  std::vector<std::vector<int>> getFilledCirclePoints (int rad, int xc, int yc, std::vector<int> color, SDL_Renderer* renderer) // just get points

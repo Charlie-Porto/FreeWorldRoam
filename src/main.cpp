@@ -13,9 +13,18 @@
 #include "ecs/ControlPanel.cpp"
 
 /* components */
+#include "ecs/components/map_array_component.cpp"
+#include "ecs/components/position_component.cpp"
+#include "ecs/components/radar_component.cpp"
 
 /* systems */
 #include "ecs/systems/CameraOperatorSystem.cpp"
+#include "ecs/systems/ObjectPositionTransformerSystem.cpp"
+#include "ecs/systems/RadarSystem.cpp"
+#include "ecs/systems/MapBuilderSystem.cpp"
+
+/* factories */
+#include "ecs/entity_factories/BlockFactory.cpp"
 
 // make sure to add framerate timer to include folder
 #include <simple_framerate_timer.cpp>
@@ -47,6 +56,9 @@ int main(int argc, const char * argv[]) {
     control.Init();
 
     /* Register Components */
+    control.RegisterComponent<pce::MapArray>();
+    control.RegisterComponent<pce::Position>();
+    control.RegisterComponent<pce::Radar>();
 
 
     /* Register Systems */
@@ -55,10 +67,25 @@ int main(int argc, const char * argv[]) {
     control.SetSystemSignature<pce::CameraOperatorSystem>(camera_sig);
     camera_system->Init();
 
+    auto position_transform_system = control.RegisterSystem<pce::ObjectPositionTransformerSystem>();
+    Signature position_transform_sig;
+    position_transform_sig.set(control.GetComponentType<pce::Position>());
+    control.SetSystemSignature<pce::ObjectPositionTransformerSystem>(position_transform_sig);
+
+    auto radar_system = control.RegisterSystem<pce::RadarSystem>();
+    Signature radar_sig;
+    radar_sig.set(control.GetComponentType<pce::Position>());
+    radar_sig.set(control.GetComponentType<pce::Radar>());
+    control.SetSystemSignature<pce::RadarSystem>(radar_sig);
 
 
+    auto map_builder_system = pce::MapBuilderSystem();
+    map_builder_system.CreateMapArray();
+    map_builder_system.PrintMapArray();
     
     /* Create Entities */
+    // auto block_factory = pce::BlockFactory();
+    // block_factory.CreateBlock(glm::dvec3(0, 0, -10));
     
 
 
@@ -84,7 +111,10 @@ int main(int argc, const char * argv[]) {
         /*~~~~~~~~~------------- Do Stuff and Update ----------------*/
         double ticks = (SDL_GetTicks()/1000.0);
         camera_system->UpdateCameraPositionAndAngle();
-
+        position_transform_system->UpdateEntities(camera_system->ProvideCamTransformVector(),
+                                                  camera_system->ProvideCamVersor(),
+                                                  camera_system->ProvideCamPosition());
+        radar_system->UpdateEntities();
 
         /*~~~~~~~~~-------------- Draw and Render --------------------*/
         // draw_system->UpdateEntities();
