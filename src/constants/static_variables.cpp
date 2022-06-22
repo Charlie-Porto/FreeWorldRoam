@@ -13,6 +13,9 @@ namespace global_const {
 const int screen_x = 1000;
 const int screen_y = 672;
 
+// lens
+const double lense_curve_index = 0.3;
+
 // pixel mapping
 const double pixel_angle_in_3space = .014;
 
