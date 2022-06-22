@@ -40,8 +40,7 @@ public:
 
   void UpdateCameraPositionAndAngle() {
     pce::cam_op::updateEyeCameraPosition(camera_, keyboard_); 
-    // ezp::print_item("camera position: ");
-    // vezp::print_dvec3(camera_.position);
+    vezp::print_labeled_dvec3("cam position", camera_.position);
     // ezp::print_item("camera view direction: ");
     // vezp::print_dvec3(camera_.view_direction);
     

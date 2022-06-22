@@ -40,12 +40,14 @@ void moveCameraViewDirectionVertical(EyeCamera& camera, const double& direction)
 
 
 void moveCameraLaterally(EyeCamera& camera, const glm::dvec3& direction) {
-  glm::dvec3 orthogonal_view_direction = glm::normalize(glm::dvec3(camera.view_direction.z, camera.view_direction.y,
+  glm::dvec3 orthogonal_view_direction = glm::normalize(glm::dvec3(camera.view_direction.z, 0.j,
                                                     -camera.view_direction.x));
+  vezp::print_labeled_dvec3("direction vector", camera.view_direction);
+  vezp::print_labeled_dvec3("orthogonal direction vector", orthogonal_view_direction);
   auto const movement_vector = glm::dvec3(
     (direction.x * -orthogonal_view_direction.x + direction.z * camera.view_direction.x),
     0.0,
-    (direction.z * camera.view_direction.z + direction.x * orthogonal_view_direction.z)
+    (direction.z * camera.view_direction.z + -direction.x * orthogonal_view_direction.z)
   ) * global_const::movement_speed;
   camera.position += movement_vector;
 }

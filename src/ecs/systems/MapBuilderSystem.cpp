@@ -19,14 +19,14 @@ extern ControlPanel control;
 
 namespace pce{
 
-const int map_height_y = 10;
 const int map_width_x = 21;
+const int map_height_y = 10;
 const int map_depth_z = 21;
 
 
 class MapBuilderSystem {
 public:
-MapBuilderSystem() : map_array_(31, 2, 31) {
+MapBuilderSystem() : map_array_(21, 10, 21) {
   ezp::print_item("constructing MapBuilderSystem");
 }
 
@@ -55,14 +55,14 @@ void CreateMapArray() {
   for (int i = 0; i < map_width_x; ++i) {
     for (int j = 0; j < map_height_y; ++j) {
       for (int k = 0; k < map_depth_z; ++k) {
-        // if (j == 0) {
-        if (j == 0 || j == map_height_y-1) {
+        if (j == 0) {
+        // if (j == 0 || j == map_height_y-1) {
           auto entity = CreateBlockEntity(glm::ivec3(i, j, k));
           map_array_.at(i, j, k) = entity;
-        } else if (k == (map_depth_z-1)){
-          auto entity = CreateBlockEntity(glm::ivec3(i, j, k));
-        } else if (i == 0 || i == map_width_x-1){
-          auto entity = CreateBlockEntity(glm::ivec3(i, j, k));
+        // } else if (k == (map_depth_z-2)){
+          // auto entity = CreateBlockEntity(glm::ivec3(i, j, k));
+        // } else if (i == 0 || i == map_width_x-1){
+          // auto entity = CreateBlockEntity(glm::ivec3(i, j, k));
         } else {
           map_array_.at(i, j, k) = 0;
         }

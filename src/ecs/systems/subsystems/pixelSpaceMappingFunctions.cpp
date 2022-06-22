@@ -16,7 +16,7 @@ and vice versa
 #include <quaternion_funktions.cpp>
 #include <ezprint.cpp>
 #include <vezprint.cpp>
-#include <vector3_functions.cpp>
+#include <vec3_functions.cpp>
 #include <sign.cpp>
 #include "../../../constants/static_variables.cpp"
 
@@ -70,7 +70,7 @@ double calculateStandardPixelDistance() {
                                         base_vector,
                                         global_const::pixel_angle_in_3space,
                                         axis_of_rotation);
-  double dist = vfunc::calculateDistanceBetweenPosition3Vectors(base_vector, adjacent_pixel);
+  double dist = v3func::calculateDistanceBetweenPosition3Vectors(base_vector, adjacent_pixel);
   // ezp::print_labeled_item("distance: ", dist);
   return dist;
 }
