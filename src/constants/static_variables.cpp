@@ -23,8 +23,8 @@ const double block_side_length = 1.0;
 const double view_sphere_radius = 1.0;
 
 // camera movement
-const double movement_speed = .1;
-const double view_movement_angle = .3;
+const double movement_speed = .3;
+const double view_movement_angle = 1.5;
 
 }
 

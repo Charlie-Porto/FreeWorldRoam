@@ -39,7 +39,7 @@ void moveCameraViewDirectionVertical(EyeCamera& camera, const double& direction)
 }
 
 
-void moveCameraAlongFloor(EyeCamera& camera, const glm::dvec3& direction) {
+void moveCameraLaterally(EyeCamera& camera, const glm::dvec3& direction) {
   glm::dvec3 orthogonal_view_direction = glm::dvec3(camera.view_direction.z, camera.view_direction.y,
                                                     -camera.view_direction.x);
   auto const movement_vector = glm::dvec3(
@@ -49,6 +49,12 @@ void moveCameraAlongFloor(EyeCamera& camera, const glm::dvec3& direction) {
   ) * global_const::movement_speed;
   camera.position += movement_vector;
 }
+
+
+void moveCameraVertically(EyeCamera& camera, const double& direction) {
+  camera.position.y += global_const::movement_speed * direction;
+}
+
 
 void updateEyeCameraPosition(EyeCamera& camera, VirtualKeyboard& keyboard) {
   JoystickReport joystick_report = keyboard.check_buttons(); 
@@ -62,27 +68,35 @@ void updateEyeCameraPosition(EyeCamera& camera, VirtualKeyboard& keyboard) {
   }
   if (joystick_report.Up_pressed == true) {
     ezp::print_item("JOYSTICK: UP");
-    moveCameraViewDirectionVertical(camera, -1.0);
+    moveCameraViewDirectionVertical(camera, 1.0);
   }
   if (joystick_report.Down_pressed == true) {
     ezp::print_item("JOYSTICK: DOWN");
-    moveCameraViewDirectionVertical(camera, 1.0);
+    moveCameraViewDirectionVertical(camera, -1.0);
   }
   if (joystick_report.W_pressed == true) {
     ezp::print_item("JOYSTICK: W");
-    moveCameraAlongFloor(camera, glm::dvec3(0, 0, -1));
+    moveCameraLaterally(camera, glm::dvec3(0, 0, -1));
   }
   if (joystick_report.S_pressed == true) {
     ezp::print_item("JOYSTICK: S");
-    moveCameraAlongFloor(camera, glm::dvec3(0, 0, 1));
+    moveCameraLaterally(camera, glm::dvec3(0, 0, 1));
   }
   if (joystick_report.A_pressed == true) {
     ezp::print_item("JOYSTICK: A");
-    moveCameraAlongFloor(camera, glm::dvec3(-1, 0, 0));
+    moveCameraLaterally(camera, glm::dvec3(-1, 0, 0));
   }
   if (joystick_report.D_pressed == true) {
     ezp::print_item("JOYSTICK: D");
-    moveCameraAlongFloor(camera, glm::dvec3(1, 0, 0));
+    moveCameraLaterally(camera, glm::dvec3(1, 0, 0));
+  }
+  if (joystick_report.r_pressed == true) {
+    ezp::print_item("JOYSTICK: R");
+    moveCameraVertically(camera, -1.0);
+  }
+  if (joystick_report.F_pressed == true) {
+    ezp::print_item("JOYSTICK: F");
+    moveCameraVertically(camera, 1.0);
   }
 }
 

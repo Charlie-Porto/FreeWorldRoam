@@ -20,19 +20,19 @@ extern ControlPanel control;
 namespace pce{
 
 const int map_height_y = 2;
-const int map_width_x = 9;
-const int map_depth_z = 9;
+const int map_width_x = 31;
+const int map_depth_z = 31;
 
 
 class MapBuilderSystem {
 public:
-MapBuilderSystem() : map_array_(9, 2, 9) {
+MapBuilderSystem() : map_array_(31, 2, 31) {
   ezp::print_item("constructing MapBuilderSystem");
 }
 
 Entity CreateBlockEntity(glm::ivec3 index) {
   Entity block = control.CreateEntity();
-    const glm::dvec3 start_position = -glm::dvec3(index) - glm::dvec3(0, -1, 10) + origin_index_;
+    const glm::dvec3 start_position = -glm::dvec3(index) - glm::dvec3(0, -2, 10) + origin_index_;
     // control.AddComponent(block, pce::Block{.type_index = 1});
     control.AddComponent(block, pce::MapArray{.index = index});
     control.AddComponent(block, pce::Position{
@@ -56,8 +56,13 @@ void CreateMapArray() {
     for (int j = 0; j < map_height_y; ++j) {
       for (int k = 0; k < map_depth_z; ++k) {
         if (j == 0) {
+        // if (j == 0 || j == map_height_y-1) {
           auto entity = CreateBlockEntity(glm::ivec3(i, j, k));
           map_array_.at(i, j, k) = entity;
+        // } else if (k == (map_depth_z-1)){
+        //   auto entity = CreateBlockEntity(glm::ivec3(i, j, k));
+        // } else if (i == 0 || i == map_width_x-1){
+        //   auto entity = CreateBlockEntity(glm::ivec3(i, j, k));
         } else {
           map_array_.at(i, j, k) = 0;
         }

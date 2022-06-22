@@ -31,15 +31,16 @@ void UpdateEntities() {
     auto& radar = control.GetComponent<pce::Radar>(entity);
 
     radar.view_sphere_hitpoint = glm::normalize((position.rotated));
-    radar.hitpoint_corresponding_pixel = -pce::pix_map::convertPointOnViewSphereToPixel(
+    radar.hitpoint_corresponding_pixel = -pce::pix_map::fastconvertPointOnViewSphereToPixel(
+    // radar.hitpoint_corresponding_pixel = -pce::pix_map::convertPointOnViewSphereToPixel(
       radar.view_sphere_hitpoint, glm::dvec3(0, 0, 0)
     );
+    
+    const double distance = glm::dot(position.rotated, position.rotated);
+    const double render_radius = 8.0 * ((10.0/distance) * 1.0);
 
-    // ezp::print_labeled_item("view_sphere_hitpoint for entity: ", entity);
-    // vezp::print_dvec3(radar.view_sphere_hitpoint);
-    // ezp::print_item("pixel");
-    // vezp::print_dvec2(radar.hitpoint_corresponding_pixel);
-    pce::quickdraw::drawSmallCircleAtVec2(radar.hitpoint_corresponding_pixel, {230, 30, 200, 255});
+    // pce::quickdraw::drawSmallCircleAtVec2(radar.hitpoint_corresponding_pixel, {230, 80, 20, 255});
+    pce::quickdraw::drawCircleAtVec2(radar.hitpoint_corresponding_pixel, render_radius);
     
   }
 }

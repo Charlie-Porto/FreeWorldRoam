@@ -17,6 +17,8 @@ struct JoystickReport{
   bool S_pressed;
   bool A_pressed;
   bool D_pressed;
+  bool r_pressed;
+  bool F_pressed;
   bool X_pressed;
 };
 
@@ -41,6 +43,8 @@ VirtualKeyboard::VirtualKeyboard() {
     joystick_.S_pressed = false;
     joystick_.A_pressed = false;
     joystick_.D_pressed = false;
+    joystick_.r_pressed = false;
+    joystick_.F_pressed = false;
     joystick_.X_pressed = false;
 }
 
@@ -90,6 +94,14 @@ JoystickReport VirtualKeyboard::check_buttons()
                     std::cout<<"PRESS: X" <<'\n';
                     joystick_.X_pressed = true;
                     break;
+                case SDLK_r:
+                    std::cout<<"PRESS: r" <<'\n';
+                    joystick_.r_pressed = true;
+                    break;
+                case SDLK_f:
+                    std::cout<<"PRESS: F" <<'\n';
+                    joystick_.F_pressed = true;
+                    break;
                 default:
                     break;
             } 
@@ -134,6 +146,14 @@ JoystickReport VirtualKeyboard::check_buttons()
                 case SDLK_x:
                     std::cout<<"LIFT: X" <<'\n';
                     joystick_.X_pressed = false;
+                    break;
+                case SDLK_r:
+                    std::cout<<"LIFT: r" <<'\n';
+                    joystick_.r_pressed = false;
+                    break;
+                case SDLK_f:
+                    std::cout<<"LIFT: F" <<'\n';
+                    joystick_.F_pressed = false;
                     break;
                 default:
                     break;
