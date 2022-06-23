@@ -3,6 +3,7 @@
 
 
 #include <ezprint.cpp>
+#include <vezprint.cpp>
 
 #include "playerMovementFunctions.cpp"
 #include "../System.cpp"
@@ -13,24 +14,29 @@ namespace pce{
 class PlayerMovementSystem : public ISystem {
 public:
 
+PlayerMovementSystem() {
+  current_time_ = 0.0;
+  time_change_ = 0.0;
+}
+
 void UpdateEntities(double sdl_time) {
-  // ezp::print_item("updating player movement system");
+  time_change_ = sdl_time - current_time_;
+  current_time_ = sdl_time;
+
   for (auto const& entity : entities) {
+    auto const& joystick = control.GetComponent<pce::Joystick>(entity);
     auto& motion = control.GetComponent<pce::Motion>(entity);
     auto& orientation = control.GetComponent<pce::Orientation>(entity);
-    
-    Entity entity_at_current_pos = pce::motion::getEntityByPositionFromMapArray(orientation.position);
-    ezp::print_labeled_item("Entity at current position: ", entity_at_current_pos);
-    
-    // if (motion.time_airborne > 0.0) {pce::motion::moveAirbornePlayer(motion, orientation);}
-    // else {
-     
-    // }
+
+    pce::motion::updatePositionBasedOnJoystickReport(joystick.report, orientation, motion.in_flight_mode);
+    vezp::print_labeled_dvec3("position: ", orientation.position);
     
   }
 }
 
 private:
+  double current_time_;
+  double time_change_;
   
  
 };

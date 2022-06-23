@@ -23,11 +23,12 @@ const double pixel_angle_in_3space = .014;
 const double block_side_length = 1.0;
 
 // camera static
-const double view_sphere_radius = 10.0;
 // const double view_sphere_radius = 10.0;
+// const double view_sphere_radius = 1.0;
+const double view_sphere_radius = .1;
 
 // camera movement
-const double movement_speed = .3;
+const double movement_speed = 0.3/view_sphere_radius;
 const double view_movement_angle = 1.5;
 
 // player physics (camera movement)

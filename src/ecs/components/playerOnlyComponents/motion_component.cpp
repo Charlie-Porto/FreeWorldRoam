@@ -13,6 +13,7 @@ struct Motion {
   glm::dvec3 initial_jump_velocity;
   double airborne_distance;
   double time_airborne;
+  bool in_flight_mode;
 };
 
 }

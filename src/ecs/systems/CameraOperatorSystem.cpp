@@ -9,9 +9,8 @@ Camera Operator System: manages the camera
 #include <ezprint.cpp>
 #include <vezprint.cpp>
 #include <eye_camera.cpp>
+#include <camera_functions.cpp>
 
-#include "cameraOperatorFunctions.cpp"
-// #include "physicsFunctionsForCamera.cpp"
 #include "../System.cpp"
 
 extern ControlPanel control;
@@ -20,9 +19,6 @@ namespace pce{
 class CameraOperatorSystem : public ISystem {
 public:
   CameraOperatorSystem (){
-    time_ = 0.0;
-    mode_switch_timer_ = -1.0;
-    mode_at_start_ = false;
   }
   
   void Init() {
@@ -45,41 +41,25 @@ public:
     return camera_.position;
   }
 
-  
-  void CheckModeSwitchButtonTimer(double sdl_time) {
-    const bool mode_at_start = camera_.flight_mode_activated;
-    time_change_ = sdl_time = time_; 
-    time_ = sdl_time;
-    mode_switch_timer_ -= time_change_;
-    if (mode_switch_timer_ < 0.0) {
-      if_mode_switch_available_ = true;
+
+  void UpdateCamera() {
+    int limiter = 1;
+    for (auto const& entity : entities) {
+    // update camera rotation versor
+      auto const& orientation = control.GetComponent<pce::Orientation>(entity);
+      const glm::dquat vert_rot_versor = cam_func::getCameraVerticalRotationVersor(-orientation.y_view_angle);
+      const glm::dquat horiz_rot_versor = cam_func::getCameraHorizontalRotationVersor(orientation.xz_view_angle);
+      camera_.rotation_versor = horiz_rot_versor * vert_rot_versor;
+      camera_.position = orientation.position;
+      camera_.transformation_vector = -orientation.position;
+      // ensure camera is updated once
+      --limiter;
+      if (limiter == 0) {break;}
     }
-  }
-
-
-  void UpdateCameraPositionAndAngle(const double sdl_time) {
-    CheckModeSwitchButtonTimer(sdl_time);
-    pce::cam_op::updateEyeCameraKeyboardPosition(camera_, keyboard_, if_mode_switch_available_); 
-    if (mode_at_start_ != camera_.flight_mode_activated) {
-      mode_switch_timer_ = 1.0;   
-      if_mode_switch_available_ = false;
-    }
-
-    // if (camera_.currently_airborne || camera_.currently_jumping) {
-      // pce::cam_phys::updateCameraAirbornePosition(camera_, time_change_, map_array, map_origin_index);
-    // }
-
-    vezp::print_labeled_dvec3("cam position", camera_.position);
   }
 
 private:
-  double time_;
-  double time_change_;
-  bool mode_at_start_;
-  double mode_switch_timer_;
-  bool if_mode_switch_available_;
   EyeCamera camera_;
-  VirtualKeyboard keyboard_;
   
 
 };

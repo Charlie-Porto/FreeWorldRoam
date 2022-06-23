@@ -38,13 +38,14 @@ void UpdateEntities() {
     );
     
     const double distance = glm::dot(position.rotated, position.rotated);
-    const double render_radius = 8.0 * ((30.0/distance) * 1.0);
+    const double render_radius = 20.0 * ((30.0/distance) * 1.0);
 
     
-    if (glm::dot(position.rotated, position.rotated) < 20.0) {
+    if (glm::dot(position.rotated, position.rotated) < 60.0) {
       pce::quickdraw::drawSmallCircleAtVec2(radar.hitpoint_corresponding_pixel, {230, 80, 20, 255});
+    } else {
+      pce::quickdraw::drawCircleAtVec2(radar.hitpoint_corresponding_pixel, render_radius);
     }
-    pce::quickdraw::drawCircleAtVec2(radar.hitpoint_corresponding_pixel, render_radius);
     
   }
 }
