@@ -18,6 +18,10 @@ struct EyeCamera {
   double y_angle;
   glm::dquat rotation_versor;
   glm::dvec3 transformation_vector;
+  bool flight_mode_activated;
+  bool currently_airborne;
+  bool currently_jumping;
+  double time_airborne;
 };
 }
 

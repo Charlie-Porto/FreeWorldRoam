@@ -26,6 +26,7 @@ class RadarSystem : public ISystem {
 public:
 
 void UpdateEntities() {
+  // ezp::print_item("updating radar");
   for (auto const& entity : entities) {
     auto const& position = control.GetComponent<pce::Position>(entity);
     auto& radar = control.GetComponent<pce::Radar>(entity);
@@ -37,9 +38,12 @@ void UpdateEntities() {
     );
     
     const double distance = glm::dot(position.rotated, position.rotated);
-    const double render_radius = 8.0 * ((10.0/distance) * 1.0);
+    const double render_radius = 8.0 * ((30.0/distance) * 1.0);
 
-    // pce::quickdraw::drawSmallCircleAtVec2(radar.hitpoint_corresponding_pixel, {230, 80, 20, 255});
+    
+    if (glm::dot(position.rotated, position.rotated) < 20.0) {
+      pce::quickdraw::drawSmallCircleAtVec2(radar.hitpoint_corresponding_pixel, {230, 80, 20, 255});
+    }
     pce::quickdraw::drawCircleAtVec2(radar.hitpoint_corresponding_pixel, render_radius);
     
   }

@@ -10,6 +10,7 @@ to be properly detected & rendered by the radar and rendering systems.
 #include <glm/vec3.hpp>
 #include <glm/ext/quaternion_double.hpp>
 #include <ezprint.cpp>
+#include <vezprint.cpp>
 
 #include "../System.cpp"
 
@@ -25,11 +26,9 @@ void UpdateEntities(const glm::dvec3& transform_vector, const glm::dquat versor,
     auto& position = control.GetComponent<pce::Position>(entity);
     const glm::dvec3 transformed_position = position.actual + transform_vector;
     position.rotated = qfunc::rotateVector3byQuaternion(transformed_position, versor);
-  //   ezp::print_item("actual position: ");
-  //   vezp::print_dvec3(position.actual);
-  //   ezp::print_item("rotated position: ");
-  //   vezp::print_dvec3(position.rotated);
-  } 
+
+  }
+  
 }
 
 private:

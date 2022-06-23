@@ -59,7 +59,7 @@ void drawSmallCircleAtVec2(const glm::vec2& point, const std::vector<int>& color
   // ezp::print_item("drawing circle at Vec2");
   // vezp::print_dvec2(point);
   const glm::vec2 sdl_transform = ConvertCartesianCoordinatesToSDL(point);
-  drawCircle(sdl_transform.x, sdl_transform.y, 2, color, Simulation::renderer);
+  drawCircle(sdl_transform.x, sdl_transform.y, 5, color, Simulation::renderer);
 }
 
 const std::vector<int> mcolor = {100, 160, 50, 255};

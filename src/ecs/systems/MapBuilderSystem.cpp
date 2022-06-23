@@ -13,6 +13,7 @@ psuedo-system that makes the map
 #include <orca_array.hpp>
 
 #include <ezprint.cpp>
+#include <vezprint.cpp>
 
 
 extern ControlPanel control;
@@ -20,19 +21,24 @@ extern ControlPanel control;
 namespace pce{
 
 const int map_width_x = 21;
-const int map_height_y = 10;
-const int map_depth_z = 21;
+const int map_height_y = 5;
+const int map_depth_z = 51;
 
 
 class MapBuilderSystem {
 public:
-MapBuilderSystem() : map_array_(21, 10, 21) {
+// MapBuilderSystem() : map_array_(21, 5, 71) {
+MapBuilderSystem() {
+  origin_index_ = glm::dvec3(double(map_width_x - 1.0)/2.0,
+                             0.0, 
+                             double(map_depth_z - 1.0)/2.0);
   ezp::print_item("constructing MapBuilderSystem");
 }
 
 Entity CreateBlockEntity(glm::ivec3 index) {
   Entity block = control.CreateEntity();
     const glm::dvec3 start_position = -glm::dvec3(index) - glm::dvec3(0, -2, 10) + origin_index_;
+    // const glm::dvec3 start_position = glm::dvec3(index) + origin_index_;
     // control.AddComponent(block, pce::Block{.type_index = 1});
     control.AddComponent(block, pce::MapArray{.index = index});
     control.AddComponent(block, pce::Position{
@@ -48,15 +54,12 @@ Entity CreateBlockEntity(glm::ivec3 index) {
 
 
 void CreateMapArray() {
-  origin_index_ = glm::dvec3(double(map_width_x - 1.0)/2.0,
-                             0.0, 
-                             double(map_depth_z - 1.0)/2.0);
   // currently, this function creates a 5x5 floor
   for (int i = 0; i < map_width_x; ++i) {
     for (int j = 0; j < map_height_y; ++j) {
       for (int k = 0; k < map_depth_z; ++k) {
-        if (j == 0) {
-        // if (j == 0 || j == map_height_y-1) {
+        // if (j == 0) {
+        if (j == 0 || j == map_height_y-1) {
           auto entity = CreateBlockEntity(glm::ivec3(i, j, k));
           map_array_.at(i, j, k) = entity;
         // } else if (k == (map_depth_z-2)){
@@ -92,12 +95,17 @@ const orca_array::array3d<uint32_t>& ProvideMapArray() {
   return map_array_;
 }
 
+static glm::dvec3 origin_index_;
+static orca_array::array3d<uint32_t> map_array_;
+
 private:
 // uint32_t MapArray[map_width_x][map_height_y][map_depth_z];
-glm::dvec3 origin_index_;
-orca_array::array3d<uint32_t> map_array_;
 // std::vector<std::vector<std::vector<uint32_t>>> AltMapArray;
-
 };
+
+glm::dvec3 MapBuilderSystem::origin_index_;
+orca_array::array3d<uint32_t> MapBuilderSystem::map_array_(21, 5, 51);
+
+
 }
 #endif /* MapBuilderSystem_cpp */

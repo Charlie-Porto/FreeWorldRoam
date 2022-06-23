@@ -16,8 +16,11 @@
 #include "ecs/components/map_array_component.cpp"
 #include "ecs/components/position_component.cpp"
 #include "ecs/components/radar_component.cpp"
+#include "ecs/components/playerOnlyComponents/orientation_component.cpp"
+#include "ecs/components/playerOnlyComponents/motion_component.cpp"
 
 /* systems */
+#include "ecs/systems/PlayerMovementSystem.cpp"
 #include "ecs/systems/CameraOperatorSystem.cpp"
 #include "ecs/systems/ObjectPositionTransformerSystem.cpp"
 #include "ecs/systems/RadarSystem.cpp"
@@ -59,6 +62,8 @@ int main(int argc, const char * argv[]) {
     control.RegisterComponent<pce::MapArray>();
     control.RegisterComponent<pce::Position>();
     control.RegisterComponent<pce::Radar>();
+    control.RegisterComponent<pce::Orientation>();
+    control.RegisterComponent<pce::Motion>();
 
 
     /* Register Systems */
@@ -66,6 +71,12 @@ int main(int argc, const char * argv[]) {
     Signature camera_sig;
     control.SetSystemSignature<pce::CameraOperatorSystem>(camera_sig);
     camera_system->Init();
+
+    auto player_movement_system = control.RegisterSystem<pce::PlayerMovementSystem>();
+    Signature player_mvmt_sig;
+    player_mvmt_sig.set(control.GetComponentType<pce::Motion>());
+    player_mvmt_sig.set(control.GetComponentType<pce::Orientation()>());
+    control.SetSystemSignature<pce::PlayerMovementSystem>(player_mvmt_sig);
 
     auto position_transform_system = control.RegisterSystem<pce::ObjectPositionTransformerSystem>();
     Signature position_transform_sig;
@@ -81,6 +92,19 @@ int main(int argc, const char * argv[]) {
 
     auto map_builder_system = pce::MapBuilderSystem();
     map_builder_system.CreateMapArray();
+    Entity player = control.CreateEntity();
+    control.AddComponent(player, pce::Motion{
+        .is_falling = false,
+        .is_jumping = false,
+        .speed = 0.0,
+        .travel_direction = glm::dvec3(0, 0, 0),
+        .initial_jump_velocity = glm::dvec3(0, 10, 0),
+        .time_airborne = 0.0
+    });
+    control.AddComponent(player, pce::Orientation{
+        .position = glm::dvec3(0, 1.5, 0),
+        .view_direction = glm::dvec3(0, 0, -1.0)
+    });
     map_builder_system.PrintMapArray();
     
     /* Create Entities */
@@ -110,16 +134,22 @@ int main(int argc, const char * argv[]) {
 
         /*~~~~~~~~~------------- Do Stuff and Update ----------------*/
         double ticks = (SDL_GetTicks()/1000.0);
-        camera_system->UpdateCameraPositionAndAngle();
+        player_movement_system->UpdateEntities(ticks);
+                                               
+        // camera_system->UpdateCameraPositionAndAngle(ticks, map_builder_system.ProvideMapArray(),
+                                                    // map_builder_system.ProvideOriginIndex());        
+
+        camera_system->UpdateCameraPositionAndAngle(ticks);
+                                                    
+        // /*~~~~~~~~~-------------- Detect, Draw and Render --------------------*/
         position_transform_system->UpdateEntities(camera_system->ProvideCamTransformVector(),
                                                   camera_system->ProvideCamVersor(),
                                                   camera_system->ProvideCamPosition());
         radar_system->UpdateEntities();
 
-        /*~~~~~~~~~-------------- Draw and Render --------------------*/
-        // draw_system->UpdateEntities();
-        simulation->render();
 
+        /*^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+        simulation->render();
         /*^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
         /* Clear events list */
         simulation->clear_frame_events();

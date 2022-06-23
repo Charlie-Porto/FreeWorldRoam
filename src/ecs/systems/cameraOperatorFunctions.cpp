@@ -42,8 +42,8 @@ void moveCameraViewDirectionVertical(EyeCamera& camera, const double& direction)
 void moveCameraLaterally(EyeCamera& camera, const glm::dvec3& direction) {
   glm::dvec3 orthogonal_view_direction = glm::normalize(glm::dvec3(camera.view_direction.z, 0.j,
                                                     -camera.view_direction.x));
-  vezp::print_labeled_dvec3("direction vector", camera.view_direction);
-  vezp::print_labeled_dvec3("orthogonal direction vector", orthogonal_view_direction);
+  // vezp::print_labeled_dvec3("direction vector", camera.view_direction);
+  // vezp::print_labeled_dvec3("orthogonal direction vector", orthogonal_view_direction);
   auto const movement_vector = glm::dvec3(
     (direction.x * -orthogonal_view_direction.x + direction.z * camera.view_direction.x),
     0.0,
@@ -58,7 +58,9 @@ void moveCameraVertically(EyeCamera& camera, const double& direction) {
 }
 
 
-void updateEyeCameraPosition(EyeCamera& camera, VirtualKeyboard& keyboard) {
+
+void updateEyeCameraKeyboardPosition(EyeCamera& camera, VirtualKeyboard& keyboard,
+                             bool if_mode_switch_available) {
   JoystickReport joystick_report = keyboard.check_buttons(); 
   if (joystick_report.R_pressed == true) { 
     ezp::print_item("JOYSTICK: RIGHT");
@@ -92,13 +94,31 @@ void updateEyeCameraPosition(EyeCamera& camera, VirtualKeyboard& keyboard) {
     ezp::print_item("JOYSTICK: D");
     moveCameraLaterally(camera, glm::dvec3(1, 0, 0));
   }
-  if (joystick_report.r_pressed == true) {
-    ezp::print_item("JOYSTICK: R");
-    moveCameraVertically(camera, -1.0);
+  if (camera.flight_mode_activated) {
+    if (joystick_report.r_pressed == true) {
+      ezp::print_item("JOYSTICK: R");
+      moveCameraVertically(camera, -1.0);
+    }
+    if (joystick_report.F_pressed == true) {
+      ezp::print_item("JOYSTICK: F");
+      moveCameraVertically(camera, 1.0);
+    }
+  } else {
+    if (joystick_report.SPACE_pressed == true) {
+      ezp::print_item("JOYSTICK: SPACE");
+      if (!camera.currently_jumping) {
+        camera.currently_jumping = true;       
+      }
+      moveCameraVertically(camera, 1.0);
+    }
   }
-  if (joystick_report.F_pressed == true) {
-    ezp::print_item("JOYSTICK: F");
-    moveCameraVertically(camera, 1.0);
+  if (joystick_report.X_pressed == true) {
+    ezp::print_item("JOYSTICK: X");
+    if (if_mode_switch_available) {
+      camera.flight_mode_activated = !camera.flight_mode_activated;
+    } else {
+      ezp::print_item("Mode Switch not yet available -- wait a few seconds after your last switch.");
+    }
   }
 }
 
