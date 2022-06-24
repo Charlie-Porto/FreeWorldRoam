@@ -27,6 +27,7 @@ public:
 
 void UpdateEntities() {
   // ezp::print_item("updating radar");
+  pce::quickdraw::DrawCrossHairs();
   for (auto const& entity : entities) {
     auto const& position = control.GetComponent<pce::Position>(entity);
     auto& radar = control.GetComponent<pce::Radar>(entity);
@@ -35,19 +36,25 @@ void UpdateEntities() {
     radar.hitpoint_corresponding_pixel = -pce::pix_map::fastconvertPointOnViewSphereToPixel(
     // radar.hitpoint_corresponding_pixel = -pce::pix_map::convertPointOnViewSphereToPixel(
       radar.view_sphere_hitpoint, glm::dvec3(0, 0, 0)
-    );
+    // );
+    ) / 2.0;
     
-    const double distance = glm::dot(position.rotated, position.rotated);
-    const double render_radius = 20.0 * ((30.0/distance) * 1.0);
-
+    pce::quickdraw::drawPixelAtVec2(radar.hitpoint_corresponding_pixel, {100,200, 50, 255});
+    // const double distance = glm::dot(position.rotated, position.rotated);
+    // const double render_radius = 10.0 * ((30.0/distance) * 1.0);
+    // if (entity < 11) {
+    // if (entity > 70 && entity < 100) {
+      // pce::quickdraw::drawCircleAtVec2(radar.hitpoint_corresponding_pixel, {255, 255, 255, 255}, render_radius);
+    // }
+    // else if (glm::dot(position.rotated, position.rotated) < 100.0) {
+      // pce::quickdraw::drawCircleAtVec2(radar.hitpoint_corresponding_pixel, {230, 80, 20, 255}, render_radius);
+      // pce::quickdraw::drawPixelAtVec2(radar.hitpoint_corresponding_pixel, {230, 80, 20, 255});
+    // } else {
+      // pce::quickdraw::drawCircleAtVec2(radar.hitpoint_corresponding_pixel, {100,160, 50, 255}, render_radius);
+      // pce::quickdraw::drawPixelAtVec2(radar.hitpoint_corresponding_pixel, {100,200, 50, 255});
+    // }
     
-    if (glm::dot(position.rotated, position.rotated) < 60.0) {
-      pce::quickdraw::drawSmallCircleAtVec2(radar.hitpoint_corresponding_pixel, {230, 80, 20, 255});
-    } else {
-      pce::quickdraw::drawCircleAtVec2(radar.hitpoint_corresponding_pixel, render_radius);
-    }
-    
-  }
+  } // for testing
 }
 
 private:

@@ -18,6 +18,17 @@ simple drawing functions to assist the ray trace system
 namespace pce {
 namespace quickdraw {
 
+std::vector<glm::dvec2> ConvertGroupCartesianPointstoSDL(const std::vector<glm::dvec2>& points) {
+  std::vector<glm::dvec2> sdl_points;
+  for (auto const& point : points) {
+    const int sdl_x = point.x + int(global_const::screen_x/2);
+    const int sdl_y = -point.y + int(global_const::screen_y/2);
+    sdl_points.push_back(glm::dvec2(sdl_x, sdl_y));
+  }
+  return sdl_points;
+}
+
+
 glm::vec2 ConvertCartesianCoordinatesToSDL(glm::vec2 point) {
   const int sdl_x = point.x + int(global_const::screen_x/2);
   const int sdl_y = -point.y + int(global_const::screen_y/2);
@@ -62,12 +73,34 @@ void drawSmallCircleAtVec2(const glm::vec2& point, const std::vector<int>& color
   drawCircle(sdl_transform.x, sdl_transform.y, 10, color, Simulation::renderer);
 }
 
-const std::vector<int> mcolor = {100, 160, 50, 255};
-void drawCircleAtVec2(glm::vec2 point, double radius) {
+// const std::vector<int> mcolor = {100, 160, 50, 255};
+void drawCircleAtVec2(const glm::vec2& point, const std::vector<int>& color, double radius) {
   // ezp::print_item("drawing circle at Vec2");
   // vezp::print_dvec2(point);
   const glm::vec2 sdl_transform = ConvertCartesianCoordinatesToSDL(point);
-  drawCircle(sdl_transform.x, sdl_transform.y, int(radius), mcolor, Simulation::renderer);
+  drawCircle(sdl_transform.x, sdl_transform.y, int(radius), color, Simulation::renderer);
+}
+
+const std::vector<glm::dvec2> crosshair_points = {
+  glm::dvec2(0, 0),
+  glm::dvec2(0, 1),
+  glm::dvec2(0, -1),
+  glm::dvec2(0, 2),
+  glm::dvec2(0, -2),
+  glm::dvec2(0, 3),
+  glm::dvec2(0, -3),
+  glm::dvec2(1, 0),
+  glm::dvec2(-1, 0),
+  glm::dvec2(2, 0),
+  glm::dvec2(-2, 0),
+  glm::dvec2(3, 0),
+  glm::dvec2(-3, 0),
+};
+
+const std::vector<glm::dvec2> crosshair_SDL_points = ConvertGroupCartesianPointstoSDL(crosshair_points);
+
+void DrawCrossHairs() {
+  pce::render::renderVec2PixelList(crosshair_SDL_points, {255, 255, 255, 255}, Simulation::renderer);
 }
 
 }

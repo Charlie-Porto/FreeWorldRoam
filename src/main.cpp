@@ -16,6 +16,7 @@
 #include "ecs/components/map_array_component.cpp"
 #include "ecs/components/position_component.cpp"
 #include "ecs/components/radar_component.cpp"
+#include "ecs/components/open_block_face_component.cpp"
 #include "ecs/components/playerOnlyComponents/orientation_component.cpp"
 #include "ecs/components/playerOnlyComponents/motion_component.cpp"
 #include "ecs/components/playerOnlyComponents/joystick_component.cpp"
@@ -27,6 +28,7 @@
 #include "ecs/systems/ObjectPositionTransformerSystem.cpp"
 #include "ecs/systems/RadarSystem.cpp"
 #include "ecs/systems/MapBuilderSystem.cpp"
+#include "ecs/systems/BlockRenderSystem.cpp"
 
 /* factories */
 #include "ecs/entity_factories/BlockFactory.cpp"
@@ -64,6 +66,7 @@ int main(int argc, const char * argv[]) {
     control.RegisterComponent<pce::MapArray>();
     control.RegisterComponent<pce::Position>();
     control.RegisterComponent<pce::Radar>();
+    control.RegisterComponent<pce::OpenBlockFace>();
     control.RegisterComponent<pce::Orientation>();
     control.RegisterComponent<pce::Motion>();
     control.RegisterComponent<pce::Joystick>();
@@ -98,6 +101,13 @@ int main(int argc, const char * argv[]) {
     radar_sig.set(control.GetComponentType<pce::Radar>());
     control.SetSystemSignature<pce::RadarSystem>(radar_sig);
 
+    auto block_render_system = control.RegisterSystem<pce::BlockRenderSystem>();
+    Signature block_render_sig;
+    block_render_sig.set(control.GetComponentType<pce::OpenBlockFace>());
+    block_render_sig.set(control.GetComponentType<pce::Position>());
+    block_render_sig.set(control.GetComponentType<pce::Radar>());
+    control.SetSystemSignature<pce::BlockRenderSystem>(block_render_sig);
+
 
     auto map_builder_system = pce::MapBuilderSystem();
     map_builder_system.CreateMapArray();
@@ -113,13 +123,16 @@ int main(int argc, const char * argv[]) {
         .in_flight_mode = false
     });
     control.AddComponent(player, pce::Orientation{
-        .position = glm::dvec3(0, 1.5, 0),
-        .view_direction = glm::dvec3(0, 0, -1.0),
-        .xz_view_angle = 0.0,
+        // .position = glm::dvec3(0, 1.6, 0),
+        .position = glm::dvec3(-22, 2.6, 42),
+        // .view_direction = glm::dvec3(0, 0, -1.0),
+        .view_direction = glm::dvec3(0, 0, 1.0),
+        .xz_view_angle = 180.0,
         .y_view_angle = 0.0
     });
     control.AddComponent(player, pce::Joystick{});
     map_builder_system.PrintMapArray();
+    map_builder_system.assignAllOpenBlockFaceComponents();
     
     /* Create Entities */
     // auto block_factory = pce::BlockFactory();
@@ -161,6 +174,8 @@ int main(int argc, const char * argv[]) {
                                                   camera_system->ProvideCamVersor(),
                                                   camera_system->ProvideCamPosition());
         radar_system->UpdateEntities();
+        block_render_system->UpdateEntities(camera_system->ProvideCamTransformVector(),
+                                            camera_system->ProvideCamVersor());
 
 
         /*^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/

@@ -20,11 +20,11 @@ namespace pce{
 class ObjectPositionTransformerSystem : public ISystem {
 public:
 
-void UpdateEntities(const glm::dvec3& transform_vector, const glm::dquat versor,
+void UpdateEntities(const glm::dvec3& transform_vector, const glm::dquat& versor,
                     const glm::dvec3& camera_position) {
   for (auto const entity : entities) {
     auto& position = control.GetComponent<pce::Position>(entity);
-    const glm::dvec3 transformed_position = position.actual + transform_vector;
+    const glm::dvec3 transformed_position = position.actual - transform_vector;
     position.rotated = qfunc::rotateVector3byQuaternion(transformed_position, versor);
 
   }

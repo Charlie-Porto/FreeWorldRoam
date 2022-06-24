@@ -76,7 +76,7 @@ void rotateGazeVertically(pce::Orientation& orientation, const double& direction
 
 void movePlayerLaterally(pce::Orientation& orientation, const glm::dvec3 direction) {
   ezp::print_item("moving player laterally");
-  glm::dvec3 orthogonal_view_direction = glm::normalize(glm::dvec3(orientation.view_direction.z, 0.j,
+  glm::dvec3 orthogonal_view_direction = glm::normalize(glm::dvec3(orientation.view_direction.z, 0.0,
                                                     -orientation.view_direction.x));
   vezp::print_labeled_dvec3("direction vector", orientation.view_direction);
   vezp::print_labeled_dvec3("orthogonal direction vector", orthogonal_view_direction);
@@ -86,13 +86,13 @@ void movePlayerLaterally(pce::Orientation& orientation, const glm::dvec3 directi
     (2.0 * direction.z * orientation.view_direction.z + -direction.x/10.0 * orthogonal_view_direction.z)
   ) * global_const::movement_speed;
   const glm::dvec3 potential_position = orientation.position + movement_vector;
-  if (getEntityByPositionFromMapArray(potential_position) == 0) {
+  // if (getEntityByPositionFromMapArray(potential_position) == 0) {
     orientation.position += movement_vector;
 
     // note: need to update player speed here
-  } else {
-    ezp::print_item("entity in the way");
-  }
+  // } else {
+    // ezp::print_item("entity in the way");
+  // }
 
 }
 
@@ -101,10 +101,10 @@ void updatePositionBasedOnJoystickReport(const JoystickReport& report,
                                          pce::Orientation& orientation,
                                          bool if_flight_mode) {
   // first, update left and right position
-  if (report.A_pressed) { movePlayerLaterally(orientation, glm::dvec3(-1, 0, 0)); }
-  if (report.D_pressed) { movePlayerLaterally(orientation, glm::dvec3(1, 0, 0)); }
-  if (report.W_pressed) { movePlayerLaterally(orientation, glm::dvec3(0, 0, -1)); }
-  if (report.S_pressed) { movePlayerLaterally(orientation, glm::dvec3(0, 0, 1)); }
+  if (report.D_pressed) { movePlayerLaterally(orientation, glm::dvec3(-1, 0, 0)); }
+  if (report.A_pressed) { movePlayerLaterally(orientation, glm::dvec3(1, 0, 0)); }
+  if (report.S_pressed) { movePlayerLaterally(orientation, glm::dvec3(0, 0, -1)); }
+  if (report.W_pressed) { movePlayerLaterally(orientation, glm::dvec3(0, 0, 1)); }
   if (report.R_pressed) { rotateGazeLaterally(orientation, 1.0); }
   if (report.L_pressed) { rotateGazeLaterally(orientation, -1.0); }
   if (report.Up_pressed) { rotateGazeVertically(orientation, 1.0); }
