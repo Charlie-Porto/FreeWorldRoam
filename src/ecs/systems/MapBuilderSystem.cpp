@@ -63,7 +63,8 @@ void CreateMapArray() {
         } else if ((i == 5 && k == 5 && j < 2)
                 || (i == 5 && k == 6 && j < 2)
                 || (i == 6 && k == 6 && j < 2)
-                || (i == 6 && k == 5 && j < 2)) {
+                || (i == 6 && k == 5 && j < 2)
+                || (i == 4 && k == 13 && j < 2)) {
           auto entity = CreateBlockEntity(glm::ivec3(i, j, k));
           map_array_.at(i, j, k) = entity;
         // } else if (k == (map_depth_z-2)){
@@ -116,10 +117,9 @@ void assignAllOpenBlockFaceComponents() {
             open_faces.open_faces.push_back(glm::dvec3(0.5, 0, 0));
           }
         }
-        
                 
         // check for block behind
-        if (k < 0)  {
+        if (k > 0)  {
           if (map_array_.at(i, j, k-1) == 0) {
             open_faces.open_faces.push_back(glm::dvec3(0, 0, -0.5));
           }

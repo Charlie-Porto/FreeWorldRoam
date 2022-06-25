@@ -23,6 +23,7 @@
 
 /* systems */
 #include "ecs/systems/PlayerMovementSystem.cpp"
+#include "ecs/systems/PhysicsSystem.cpp"
 #include "ecs/systems/JoystickSystem.cpp"
 #include "ecs/systems/CameraOperatorSystem.cpp"
 #include "ecs/systems/ObjectPositionTransformerSystem.cpp"
@@ -85,6 +86,12 @@ int main(int argc, const char * argv[]) {
     player_mvmt_sig.set(control.GetComponentType<pce::Orientation>());
     control.SetSystemSignature<pce::PlayerMovementSystem>(player_mvmt_sig);
 
+    auto physics_system = control.RegisterSystem<pce::PhysicsSystem>();
+    Signature physics_sig;
+    physics_sig.set(control.GetComponentType<pce::Motion>());
+    physics_sig.set(control.GetComponentType<pce::Orientation>());
+    control.SetSystemSignature<pce::PhysicsSystem>(physics_sig);
+
     auto joystick_system = control.RegisterSystem<pce::JoystickSystem>();
     Signature joystick_sig;
     joystick_sig.set(control.GetComponentType<pce::Joystick>());
@@ -112,19 +119,22 @@ int main(int argc, const char * argv[]) {
     auto map_builder_system = pce::MapBuilderSystem();
     map_builder_system.CreateMapArray();
     Entity player = control.CreateEntity();
+
+    glm::dvec3 start_position = glm::dvec3(-22, 20.6, 42);
     control.AddComponent(player, pce::Motion{
-        .is_falling = false,
+        .is_airborne = true,
         .is_jumping = false,
-        .speed = 0.0,
+        .speed = 1.0,
         .travel_direction = glm::dvec3(0, 0, 0),
-        .initial_jump_velocity = glm::dvec3(0, 10, 0),
-        .airborne_distance = 0.0,
+        .initial_velocity = glm::dvec3(0, 0, 0),
+        .previous_ground_position = start_position,
         .time_airborne = 0.0,
         .in_flight_mode = false
     });
     control.AddComponent(player, pce::Orientation{
         // .position = glm::dvec3(0, 1.6, 0),
-        .position = glm::dvec3(-22, 2.6, 42),
+        .position = start_position,
+        .previous_position = start_position,
         // .view_direction = glm::dvec3(0, 0, -1.0),
         .view_direction = glm::dvec3(0, 0, 1.0),
         .xz_view_angle = 180.0,
@@ -163,6 +173,7 @@ int main(int argc, const char * argv[]) {
         double ticks = (SDL_GetTicks()/1000.0);
         joystick_system->UpdateEntities(ticks);
         player_movement_system->UpdateEntities(ticks);
+        physics_system->UpdateEntities(ticks);
                                                
         // camera_system->UpdateCameraPositionAndAngle(ticks, map_builder_system.ProvideMapArray(),
                                                     // map_builder_system.ProvideOriginIndex());        

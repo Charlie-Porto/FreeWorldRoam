@@ -37,7 +37,7 @@ glm::dvec2 fastconvertPointOnViewSphereToPixel(const glm::dvec3& point,
   const double y_point_angle = abs(atan(point.y/point.z));
   const double y_pix_angle_arc_length = y_circle_radius * abs((global_const::pixel_angle_in_3space * PI/180.0)); 
   const double y_point_arc_length = y_point_angle * (global_const::pixel_angle_in_3space * PI/180.0);
-  const double y_pixel = 70.0 * y_point_arc_length/y_pix_angle_arc_length * pce::math::sign(point.y);
+  const double y_pixel = 90.0 * y_point_arc_length/y_pix_angle_arc_length * pce::math::sign(point.y);
   // const double y_pixel = y_point_arc_length/y_pix_angle_arc_length * pce::math::sign(point.y);
 
   const double x_point_angle = abs(atan(point.x / point.z));

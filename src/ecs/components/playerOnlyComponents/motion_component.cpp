@@ -6,13 +6,14 @@
 namespace pce {
 
 struct Motion {
-  bool is_falling;
+  bool is_airborne;
   bool is_jumping;
   double speed;
   glm::dvec3 travel_direction;
-  glm::dvec3 initial_jump_velocity;
-  double airborne_distance;
+  glm::dvec3 initial_velocity;
+  glm::dvec3 previous_ground_position;
   double time_airborne;
+
   bool in_flight_mode;
 };
 

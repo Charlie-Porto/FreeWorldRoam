@@ -28,7 +28,10 @@ glm::dvec3 getClosestVertexRelativePosition(const glm::dvec3& position) {
 std::vector<glm::dvec3> getBlockFaceVertices(const glm::dvec3 position,
                                              const glm::dvec3& side_to_render) {
   const glm::dvec3 face_center = position - side_to_render;
-  const glm::dvec3 vertices_offset_vector = glm::dvec3(0.5, 0.5, 0.5) - side_to_render;
+  const glm::dvec3 absolute_side = glm::dvec3(
+    abs(side_to_render.x), abs(side_to_render.y), abs(side_to_render.z)
+  );
+  const glm::dvec3 vertices_offset_vector = glm::dvec3(0.5, 0.5, 0.5) - absolute_side;
   if (vertices_offset_vector.y == 0) {
     return {
       glm::dvec3(face_center.x + vertices_offset_vector.x, face_center.y, face_center.z + vertices_offset_vector.z),
