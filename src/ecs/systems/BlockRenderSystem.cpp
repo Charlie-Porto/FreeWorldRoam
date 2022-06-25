@@ -22,7 +22,7 @@ public:
 
       /* the below if statement is just for deving */
       // if (entity > 255 && entity < 257) {
-      // if (entity == 2051) {
+      // if (entity == 1288) {
       // ezp::print_item("*******");
       // ezp::print_labeled_item("entity: ", entity);
       auto const& position = control.GetComponent<pce::Position>(entity);
@@ -31,7 +31,7 @@ public:
 
       glm::dvec3 closest_vertex = pce::brend::getClosestVertexRelativePosition(position.rotated);
       for (auto const& face : blockfaces.open_faces) {
-        pce::brend::renderCubeSide(position.actual, face, transform_vector, versor);
+        pce::brend::renderCubeSide(position.actual, face, transform_vector, versor, radar.distance_from_player);
       }
 
       // } /* dev if backet */

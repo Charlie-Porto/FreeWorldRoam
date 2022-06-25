@@ -40,32 +40,37 @@ void calculateAirbornePosition(pce::Motion& motion, pce::Orientation& orientatio
 }
 
 void checkForMovementObstructions(pce::Orientation& orientation, pce::Motion& motion) {
-  glm::dvec3 current_travel_direction = glm::normalize(orientation.position - orientation.previous_position);
-  const double block_obstruction_perimeter = .5;
+  const glm::dvec3 dir_travel = orientation.position - orientation.previous_position;
+  if (dir_travel.x != 0 || dir_travel.y != 0 || dir_travel.z != 0) {
+    ezp::print_item("--------");
+    // vezp::print_labeled_dvec3("orientation.position", orientation.position);
+    // vezp::print_labeled_dvec3("orientation.previous_position", orientation.previous_position);
+    // vezp::print_labeled_dvec3("dir_travel", dir_travel);
+    const double prev_x = orientation.previous_position.x;
+    const double prev_y = orientation.previous_position.y - global_const::player_block_height;
+    const double prev_z = orientation.previous_position.z;
 
-  const double prev_x = orientation.previous_position.x;
-  const double prev_y = orientation.previous_position.y - global_const::player_block_height;
-  const double prev_z = orientation.previous_position.z;
+    const double new_x = orientation.position.x;
+    const double new_y = orientation.position.y - global_const::player_block_height;
+    const double new_z = orientation.position.z;
 
-  const double new_x = orientation.position.x;
-  const double new_y = orientation.position.y - global_const::player_block_height;
-  const double new_z = orientation.position.z;
+    const glm::dvec3 z_dir_index = MapBuilderSystem::origin_index_ - glm::dvec3(prev_x, prev_y, new_z-10.0);
 
-  const glm::dvec3 z_dir_index = MapBuilderSystem::origin_index_ - glm::dvec3(prev_x, prev_y, new_z-10.0);
+    // vezp::print_labeled_dvec3("position: ", orientation.position);
+    vezp::print_labeled_dvec3("z index: ", z_dir_index);
+    
+    /* check for obstruction in x component of motion */
+    if (z_dir_index.z < 0 || z_dir_index.z > pce::map_depth_z) {
+      orientation.position.z = orientation.previous_position.z; 
+      ezp::print_item("at edge of map in z direction");
+    } else if (MapBuilderSystem::map_array_.at(z_dir_index.x, z_dir_index.y, z_dir_index.z) > 0) {
+      ezp::print_item("entity in z direction");
+      ezp::print_labeled_item("entity: ", MapBuilderSystem::map_array_.at(z_dir_index.x, z_dir_index.y, z_dir_index.z));
+      orientation.position.z = orientation.previous_position.z; 
+    }
 
-  // vezp::print_labeled_dvec3("position: ", orientation.position);
-  vezp::print_labeled_dvec3("z index: ", z_dir_index);
-   
-  /* check for obstruction in x component of motion */
-  if (z_dir_index.z < 0 || z_dir_index.z > pce::map_width_x) {
-    orientation.position.z = orientation.previous_position.z; 
-    ezp::print_item("at edge of map in z direction");
-  } else if (MapBuilderSystem::map_array_.at(z_dir_index.x, z_dir_index.y, z_dir_index.z) > 0) {
-    ezp::print_item("entity in z direction");
-    ezp::print_labeled_item("entity: ", MapBuilderSystem::map_array_.at(z_dir_index.x, z_dir_index.y, z_dir_index.z));
-    orientation.position.x = orientation.previous_position.x; 
-  }
-
+  } else {ezp::print_item("currently not moving.");}
+  orientation.previous_position = orientation.position;
 
 }
 

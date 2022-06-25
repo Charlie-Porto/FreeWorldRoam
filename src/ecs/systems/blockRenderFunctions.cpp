@@ -78,7 +78,7 @@ void renderVertex(const glm::dvec3& rotated_position) {
 
 
 void renderCubeSide(const glm::dvec3& position, const glm::dvec3& side_to_render, 
-                    const glm::dvec3& transform_vector, const glm::dquat& versor) {
+                    const glm::dvec3& transform_vector, const glm::dquat& versor, double distance) {
   std::vector<glm::dvec3> vertices = getBlockFaceVertices(position, side_to_render);
   std::vector<glm::dvec2> pixels;
   for (auto const& vertex : vertices) {
@@ -88,7 +88,8 @@ void renderCubeSide(const glm::dvec3& position, const glm::dvec3& side_to_render
       glm::normalize(transformed_position), glm::dvec3(0, 0, 0)
     ) / 2.0);
   }
-  pce::draw::drawQuadrilateral(pixels, {200, 0, 100, 255});
+  // pce::draw::drawQuadrilateral(pixels, {200, 0, 100, 255});
+  pce::draw::drawQuadrilateralWithDistanceColor(pixels, distance);
 }
 
 }

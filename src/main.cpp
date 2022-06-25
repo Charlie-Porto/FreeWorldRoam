@@ -137,7 +137,7 @@ int main(int argc, const char * argv[]) {
         .position = start_position,
         .previous_position = start_position,
         // .view_direction = glm::dvec3(0, 0, -1.0),
-        .view_direction = glm::dvec3(0, 0, 1.0),
+        .view_direction = glm::dvec3(0, 0, -1.0),
         .xz_view_angle = 180.0,
         .y_view_angle = 0.0
     });

@@ -6,6 +6,9 @@
 functions to draw squares
 -----------------------------------------------------------------*/
 
+#include <vector>
+#include <algorithm>
+
 #include <glm/vec2.hpp>
 
 #include <ezprint.cpp>
@@ -20,6 +23,15 @@ functions to draw squares
 namespace pce {
 namespace draw {
 
+std::vector<int> determineColorAsFunctionOfDistance(double distance) {
+  std::vector<int> color = {
+    std::max(255 - int(distance), 0),
+    10,
+    std::max(200 - int(distance), 0)
+  };
+  return color;
+}
+
 
 void drawQuadrilateral(const std::vector<glm::dvec2> points, std::vector<int> color) {
   const std::vector<glm::dvec2> cartesian_points = pce::quickdraw::ConvertGroupCartesianPointstoSDL(points);
@@ -32,6 +44,11 @@ void drawQuadrilateral(const std::vector<glm::dvec2> points, std::vector<int> co
     );                                           
   }
   SDL_SetRenderDrawColor(Simulation::renderer, 0, 0, 0, 255);
+}
+
+void drawQuadrilateralWithDistanceColor(const std::vector<glm::dvec2> points, double distance) {
+  const std::vector<int> color = determineColorAsFunctionOfDistance(distance); 
+  drawQuadrilateral(points, color);
 }
 
 

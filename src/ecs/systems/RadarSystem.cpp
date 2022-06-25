@@ -38,9 +38,9 @@ void UpdateEntities() {
       radar.view_sphere_hitpoint, glm::dvec3(0, 0, 0)
     // );
     ) / 2.0;
+    radar.distance_from_player = glm::dot(position.rotated, position.rotated);
     
     pce::quickdraw::drawPixelAtVec2(radar.hitpoint_corresponding_pixel, {100,200, 50, 255});
-    // const double distance = glm::dot(position.rotated, position.rotated);
     // const double render_radius = 10.0 * ((30.0/distance) * 1.0);
     // if (entity < 11) {
     // if (entity > 70 && entity < 100) {

@@ -9,6 +9,7 @@ namespace pce {
 struct Radar {
   glm::dvec3 view_sphere_hitpoint;
   glm::dvec2 hitpoint_corresponding_pixel; // expensive calculation. determine where/how to make
+  double distance_from_player;
 };
 
 }
