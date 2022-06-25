@@ -23,7 +23,7 @@ const double PI = 3.14159265;
 
 
 uint32_t getEntityByPositionFromMapArray(const glm::dvec3& position) {
-  const glm::dvec3 index = pce::MapBuilderSystem::origin_index_ - position + glm::dvec3(0, -2, 10);
+  const glm::dvec3 index = pce::MapBuilderSystem::origin_index_ - position + glm::dvec3(0, 0, 10);
   return pce::MapBuilderSystem::map_array_.at(int(index.x), int(index.y), int(index.z));
 }
 

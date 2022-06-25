@@ -34,12 +34,10 @@ public:
         if (orientation.position.y >= 3.1) {
           pce::phys::calculateAirbornePosition(motion, orientation, (time_ - previous_time_)); 
         }
+        // pce::phys::checkForMovementObstructions(orientation, motion);
       }
 
       // pce::phys::checkForMovementObstructions(orientation, motion);
-
-
-
 
        
     }

@@ -120,7 +120,8 @@ int main(int argc, const char * argv[]) {
     map_builder_system.CreateMapArray();
     Entity player = control.CreateEntity();
 
-    glm::dvec3 start_position = glm::dvec3(-22, 20.6, 42);
+    // glm::dvec3 start_position = glm::dvec3(-15, 20.6, 30);
+    glm::dvec3 start_position = glm::dvec3(0, 20.6, 0);
     control.AddComponent(player, pce::Motion{
         .is_airborne = true,
         .is_jumping = false,

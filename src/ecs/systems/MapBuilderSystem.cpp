@@ -31,12 +31,14 @@ MapBuilderSystem() {
   origin_index_ = glm::dvec3(double(map_width_x - 1.0)/2.0,
                              0.0, 
                              double(map_depth_z - 1.0)/2.0);
+  // origin_index_ = glm::dvec3(double(map_width_x), double(map_height_y), double(map_depth_z));
+  // vezp::print_labeled_dvec3("origin_index_", origin_index_);
   ezp::print_item("constructing MapBuilderSystem");
 }
 
 Entity CreateBlockEntity(glm::ivec3 index) {
   Entity block = control.CreateEntity();
-    const glm::dvec3 start_position = -glm::dvec3(index) - glm::dvec3(0, 0, 10) + origin_index_;
+    const glm::dvec3 start_position = glm::dvec3(index) - glm::dvec3(0, 0, 10) - origin_index_;
     // control.AddComponent(block, pce::Block{.type_index = 1});
     control.AddComponent(block, pce::MapArray{.index = index});
     control.AddComponent(block, pce::Position{
@@ -44,8 +46,8 @@ Entity CreateBlockEntity(glm::ivec3 index) {
     });
     control.AddComponent(block, pce::Radar{});
     control.AddComponent(block, pce::OpenBlockFace{});
-  ezp::print_labeled_item("entity start position for entity: ", block);
-  vezp::print_dvec3(start_position);
+  // ezp::print_labeled_item("entity start position for entity: ", block);
+  // vezp::print_dvec3(start_position);
   return block;
 }
 
@@ -65,7 +67,7 @@ void CreateMapArray() {
                 || (i == 6 && k == 6 && j < 2)
                 || (i == 6 && k == 5 && j < 2)
                 || (i == 4 && k == 13 && j < 2)) {
-          auto entity = CreateBlockEntity(glm::ivec3(i, j, k));
+          auto entity = CreateBlockEntity(glm::ivec3(i, -j, k));
           map_array_.at(i, j, k) = entity;
         // } else if (k == (map_depth_z-2)){
           // auto entity = CreateBlockEntity(glm::ivec3(i, j, k));
@@ -106,28 +108,28 @@ void assignAllOpenBlockFaceComponents() {
         
         // check for block to the left
         if (i > 0)  {
-          if (map_array_.at(i-1, j, k) == 0) {
+          if (map_array_.at(i+1, j, k) == 0) {
             open_faces.open_faces.push_back(glm::dvec3(-0.5, 0, 0));
           }
         }
 
         // check for block to the right
         if (i < map_width_x)  {
-          if (map_array_.at(i+1, j, k) == 0) {
+          if (map_array_.at(i-1, j, k) == 0) {
             open_faces.open_faces.push_back(glm::dvec3(0.5, 0, 0));
           }
         }
                 
         // check for block behind
         if (k > 0)  {
-          if (map_array_.at(i, j, k-1) == 0) {
+          if (map_array_.at(i, j, k+1) == 0) {
             open_faces.open_faces.push_back(glm::dvec3(0, 0, -0.5));
           }
         }
         
         // check for block in front
         if (k < map_depth_z)  {
-          if (map_array_.at(i, j, k+1) == 0) {
+          if (map_array_.at(i, j, k-1) == 0) {
             open_faces.open_faces.push_back(glm::dvec3(0, 0, 0.5));
           }
         }
