@@ -61,7 +61,7 @@ void movePlayerLaterally(pce::Orientation& orientation, const glm::dvec3 directi
 
 void updatePositionBasedOnJoystickReport(const JoystickReport& report,
                                          pce::Orientation& orientation,
-                                         bool if_flight_mode) {
+                                         pce::Motion& motion) {
   if (report.D_pressed) { movePlayerLaterally(orientation, glm::dvec3(-1, 0, 0)); }
   if (report.A_pressed) { movePlayerLaterally(orientation, glm::dvec3(1, 0, 0)); }
   if (report.S_pressed) { movePlayerLaterally(orientation, glm::dvec3(0, 0, -1)); }
@@ -70,6 +70,16 @@ void updatePositionBasedOnJoystickReport(const JoystickReport& report,
   if (report.L_pressed) { rotateGazeLaterally(orientation, -1.0); }
   if (report.Up_pressed) { rotateGazeVertically(orientation, 1.0); }
   if (report.Down_pressed) { rotateGazeVertically(orientation, -1.0); }
+  if (report.SPACE_pressed) { 
+    if (!motion.is_airborne){
+      motion.is_airborne = true;
+      motion.previous_ground_position = orientation.position;
+      motion.travel_direction.y = global_const::jump_velocity;
+      motion.initial_velocity = glm::dvec3(motion.speed * motion.travel_direction.x, global_const::jump_velocity, 
+                                           motion.speed * motion.travel_direction.z);
+    }
+  }
+
 }
 
 

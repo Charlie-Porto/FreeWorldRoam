@@ -28,7 +28,7 @@ void UpdateEntities(double sdl_time) {
     auto& motion = control.GetComponent<pce::Motion>(entity);
     auto& orientation = control.GetComponent<pce::Orientation>(entity);
     orientation.previous_position = orientation.position;
-    pce::motion::updatePositionBasedOnJoystickReport(joystick.report, orientation, motion.in_flight_mode);
+    pce::motion::updatePositionBasedOnJoystickReport(joystick.report, orientation, motion);
     // vezp::print_labeled_dvec3("position: ", orientation.position);
     
   }

@@ -31,12 +31,21 @@ void calculateAirbornePosition(pce::Motion& motion, pce::Orientation& orientatio
   const double new_y_position = y_position_a + y_position_v + motion.previous_ground_position.y;
   
   const double x_position_v = motion.initial_velocity.x * motion.time_airborne;
-  const double new_x_position = x_position_v + motion.previous_ground_position.x;
+  double new_x_position = x_position_v + motion.previous_ground_position.x;
+  if (new_x_position != new_x_position) {
+    new_x_position = motion.previous_ground_position.x;
+  }
 
+  ezp::print_labeled_item("x_position_v: ", x_position_v);
   const double z_position_v = motion.initial_velocity.z * motion.time_airborne;
-  const double new_z_position = z_position_v + motion.previous_ground_position.z;
-
+  double new_z_position = z_position_v + motion.previous_ground_position.z;
+  if (new_z_position != new_z_position) {
+    new_z_position = motion.previous_ground_position.z;
+  }
+  ezp::print_labeled_item("z_position_v: ", z_position_v);
   orientation.position = glm::dvec3(new_x_position, new_y_position, new_z_position);
+  vezp::print_labeled_dvec3("previous ground position: ", motion.previous_ground_position);
+  vezp::print_labeled_dvec3("orientation position after airborne calc", orientation.position);
 }
 
 void checkForMovementObstructions(pce::Orientation& orientation, pce::Motion& motion) {
@@ -55,7 +64,7 @@ void checkForMovementObstructions(pce::Orientation& orientation, pce::Motion& mo
     const double new_z = orientation.position.z;
 
     /* check for obstruction in z component of motion */
-    const glm::dvec3 z_dir_index = MapBuilderSystem::origin_index_ - glm::dvec3(prev_x, -(prev_y), new_z-10.0);
+    const glm::dvec3 z_dir_index = MapBuilderSystem::origin_index_ - glm::dvec3(prev_x, -(prev_y-2), new_z-10.0);
     vezp::print_labeled_dvec3("z index: ", z_dir_index);
     if (z_dir_index.z < 0 || z_dir_index.z > pce::map_depth_z) {
       orientation.position.z = orientation.previous_position.z; 
@@ -66,7 +75,7 @@ void checkForMovementObstructions(pce::Orientation& orientation, pce::Motion& mo
       orientation.position.z = orientation.previous_position.z; 
     }
     /* check for obstruction in x component of motion */
-    const glm::dvec3 x_dir_index = MapBuilderSystem::origin_index_ - glm::dvec3(new_x, -(prev_y), prev_z-10.0);
+    const glm::dvec3 x_dir_index = MapBuilderSystem::origin_index_ - glm::dvec3(new_x, -(prev_y-2), prev_z-10.0);
     vezp::print_labeled_dvec3("x index: ", x_dir_index);
     if (x_dir_index.x < 0 || x_dir_index.x > pce::map_width_x) {
       orientation.position.x = orientation.previous_position.x; 
@@ -78,19 +87,29 @@ void checkForMovementObstructions(pce::Orientation& orientation, pce::Motion& mo
     }
 
     /* check for obstruction in y component of motion */
-    const glm::dvec3 y_dir_index = MapBuilderSystem::origin_index_ - glm::dvec3(prev_x, -(new_y), prev_z-10.0);
-    vezp::print_labeled_dvec3("y index: ", y_dir_index);
-    if (abs(y_dir_index.y) < 0 || abs(y_dir_index.y) > pce::map_height_y) {
+    const glm::dvec3 y_dir_index = MapBuilderSystem::origin_index_ - glm::dvec3(prev_x, -(new_y-global_const::player_block_height), prev_z-10.0);
+    // vezp::print_labeled_dvec3("y index: ", y_dir_index);
+    if (y_dir_index.y < 0 || y_dir_index.y > pce::map_height_y) {
       orientation.position.y = orientation.previous_position.y; 
-      ezp::print_item("at edge of map in y direction");
+      // ezp::print_item("at edge of map in y direction");
     } else if (MapBuilderSystem::map_array_.at(y_dir_index.x, y_dir_index.y, y_dir_index.z) > 0) {
       ezp::print_item("entity in y direction");
       ezp::print_labeled_item("entity: ", MapBuilderSystem::map_array_.at(y_dir_index.x, y_dir_index.y, y_dir_index.z));
-      orientation.position.y = orientation.previous_position.y; 
+      orientation.position.y = double(ceil(orientation.previous_position.y)); 
+      motion.is_airborne = false;
+      motion.time_airborne = 0.0;
     }
   } else {ezp::print_item("currently not moving.");}
+  motion.travel_direction = orientation.position - orientation.previous_position;
   orientation.previous_position = orientation.position;
-
+  vezp::print_labeled_dvec3("travel direction", motion.travel_direction);
+  // const glm::dvec3 motion_uvec = glm::normalize(motion.travel_direction);
+  // if (motion_uvec.x && motion_uvec.y && motion_uvec.z)  {
+    // motion.speed = glm::dot(motion.travel_direction, glm::dvec3(1/motion_uvec.x, 1/motion_uvec.y, 1/motion_uvec.z));
+    // ezp::print_labeled_item("speed: ", motion.speed);
+  // } else {
+    // motion.speed = 0;
+  // }
 }
 
 }

@@ -70,7 +70,7 @@ void renderVertex(const glm::dvec3& rotated_position) {
   glm::dvec2 hitpoint_corresponding_pixel = -pce::pix_map::fastconvertPointOnViewSphereToPixel(
   // radar.hitpoint_corresponding_pixel = -pce::pix_map::convertPointOnViewSphereToPixel(
     view_sphere_hitpoint, glm::dvec3(0, 0, 0)
-  ) / 2.0;
+  ) / global_const::pixel_squish_ratio;
   // ezp::print_item("hitpoint_pixel: ");
   // vezp::print_dvec2(hitpoint_corresponding_pixel);
   // pce::quickdraw::drawCircleAtVec2(hitpoint_corresponding_pixel, {250, 0, 30, 255}, 5.0);
@@ -86,7 +86,7 @@ void renderCubeSide(const glm::dvec3& position, const glm::dvec3& side_to_render
     const glm::dvec3 transformed_position = transformVertexForRender(vertex, transform_vector, versor);
     pixels.push_back(-pce::pix_map::fastconvertPointOnViewSphereToPixel(
       glm::normalize(transformed_position), glm::dvec3(0, 0, 0)
-    ) / 2.0);
+    ) / global_const::pixel_squish_ratio);
   }
   // pce::draw::drawQuadrilateral(pixels, {200, 0, 100, 255});
   pce::draw::drawQuadrilateralWithDistanceColor(pixels, distance);
