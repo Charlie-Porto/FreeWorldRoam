@@ -25,9 +25,9 @@ namespace draw {
 
 std::vector<int> determineColorAsFunctionOfDistance(double distance) {
   std::vector<int> color = {
-    std::max(255 - int(distance), 0),
+    std::max(255 - int(distance/2.0), 0),
     10,
-    std::max(200 - int(distance), 0)
+    std::max(200 - int(distance/2.0), 0)
   };
   return color;
 }

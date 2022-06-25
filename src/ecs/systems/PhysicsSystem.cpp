@@ -32,7 +32,8 @@ public:
       if (motion.is_airborne) {
         double time_change = time_ - previous_time_;
         // ezp::print_item((time_change));
-        if (orientation.position.y >= (1.0 + global_const::player_block_height + global_const::block_side_length/2.0)) {
+        if (orientation.position.y >= (0.0 + global_const::player_block_height + global_const::block_side_length/2.0)) {
+          ezp::print_item("calculating airborne position");
           pce::phys::calculateAirbornePosition(motion, orientation, (time_ - previous_time_)); 
         }
         // pce::phys::checkForMovementObstructions(orientation, motion);

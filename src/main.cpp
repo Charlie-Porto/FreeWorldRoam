@@ -175,12 +175,7 @@ int main(int argc, const char * argv[]) {
         joystick_system->UpdateEntities(ticks);
         player_movement_system->UpdateEntities(ticks);
         physics_system->UpdateEntities(ticks);
-                                               
-        // camera_system->UpdateCameraPositionAndAngle(ticks, map_builder_system.ProvideMapArray(),
-                                                    // map_builder_system.ProvideOriginIndex());        
-
         camera_system->UpdateCamera();
-                                                    
         // /*~~~~~~~~~-------------- Detect, Draw and Render --------------------*/
         position_transform_system->UpdateEntities(camera_system->ProvideCamTransformVector(),
                                                   camera_system->ProvideCamVersor(),
