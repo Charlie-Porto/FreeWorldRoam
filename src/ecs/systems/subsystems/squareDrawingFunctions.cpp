@@ -52,6 +52,12 @@ void drawQuadrilateralWithDistanceColor(const std::vector<glm::dvec2> points, do
 }
 
 
+void drawAndFillQuadrilateral(const std::vector<glm::dvec2> points, std::vector<int> color) { 
+   
+}
+
+
+
 }
 }
 

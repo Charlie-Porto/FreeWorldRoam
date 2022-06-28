@@ -174,7 +174,7 @@ int main(int argc, const char * argv[]) {
         double ticks = (SDL_GetTicks()/1000.0);
         joystick_system->UpdateEntities(ticks);
         player_movement_system->UpdateEntities(ticks);
-        physics_system->UpdateEntities(ticks);
+        hysics_system->UpdateEntities(ticks);
         camera_system->UpdateCamera();
         // /*~~~~~~~~~-------------- Detect, Draw and Render --------------------*/
         position_transform_system->UpdateEntities(camera_system->ProvideCamTransformVector(),
